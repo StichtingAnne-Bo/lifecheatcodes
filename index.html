@@ -254,8 +254,8 @@ document.addEventListener('DOMContentLoaded', async function() {
           pageTexts[uuid] = new TextDecoder().decode(finalBytes);
           return;
         }
-        if (FONT_MIME.test(entry.mime) && MIME_TOKEN.test(entry.mime)) {
-          // Strict artifact hosts allow font-src data: but not blob:.
+        if ((FONT_MIME.test(entry.mime) || /^image[/]/i.test(entry.mime)) && MIME_TOKEN.test(entry.mime)) {
+          // data: URLs survive hosts that rewrite, proxy or block blob: refs.
           blobUrls[uuid] = 'data:' + entry.mime + ';base64,' +
             (entry.compressed ? toBase64(finalBytes) : entry.data);
         } else {
